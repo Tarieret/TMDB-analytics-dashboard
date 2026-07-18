@@ -1,15 +1,16 @@
-# Film-Industry-EDA
+# Film Industry EDA
 
-### Exploratory Data Analysis of 60,000+ Films Using R, SQLite, and ggplot2
+*Streaming and studio decision-makers often conflate popularity with quality when greenlighting content; this analysis tests whether that assumption holds across 60,000+ films, with direct implications for content investment strategy.*
 
----
+**Problem:** Determine whether genre, popularity, and release trends in film data reveal actionable patterns, and specifically test two industry assumptions: that popularity predicts quality, and that genre drives audience reception in a statistically meaningful way, across four decades of TMDB data.
 
-## Overview
-This project performs an exploratory data analysis of over 60,000 films sourced from The Movie Database (TMDB). The goal is to uncover patterns in genre popularity, audience ratings, and release trends across four decades of cinema (1980–2023).
+**Architecture decision:** Loaded raw CSV data into a local SQLite database and queried with SQL before pulling into R for wrangling and visualization via tidyverse, rather than working directly from CSV in R. This kept large-scale filtering (1.38M rows down to the analysis subset) at the database layer instead of in-memory. Excluded financial data (budget/revenue) entirely despite it being in the raw dataset, since only ~17,000 of 1.38M entries had both fields reliably recorded, an unrepresentative subset not worth analyzing. Used a Welch two-sample t-test rather than a standard t-test for the Action vs. Drama comparison, since the two genre groups don't have equal variance.
 
-Raw data is loaded into a local SQLite database and queried with SQL before being pulled into R for wrangling and visualization using the tidyverse ecosystem.
+**What broke:** SQLite stores R date objects as integers (days since 1970-01-01) rather than human-readable strings, so date range filtering had to be handled in R via `lubridate` after querying from SQLite instead of directly in SQL, to avoid silent misinterpretation of dates.
 
----
+**Metric:** Popularity and rating are nearly uncorrelated (Pearson r = 0.087, p < 0.001), popularity does not predict quality. Drama movies rate significantly higher than Action (6.27 vs. 5.96, p < 0.001) across 35,000+ films, a small but statistically robust gap.
+
+*[Tableau visualizations to be added here after expansion]*
 
 ## Key Questions
 - Which genres are most represented in the film industry?
@@ -20,14 +21,8 @@ Raw data is loaded into a local SQLite database and queried with SQL before bein
 - Is there a relationship between a movie's popularity and its rating?
 - Do Action and Drama movies receive significantly different ratings?
 
----
-
 ## Workflow
-```
 CSV → SQLite Database → SQL Query → R (tidyverse) → ggplot2 Visualizations
-```
-
----
 
 ## Visualizations
 
@@ -46,7 +41,6 @@ CSV → SQLite Database → SQL Query → R (tidyverse) → ggplot2 Visualizatio
 ![Top 10 Genres](plots/02_top_genres.png)
 ![Most Popular Movies](plots/06_most_popular.png)
 
----
 ## Statistical Analysis
 
 **Pearson Correlation — Popularity vs. Rating**
@@ -57,35 +51,32 @@ Tests whether Action and Drama movies receive statistically different audience r
 - H₀: No significant difference in ratings between Action and Drama movies
 - H₁: A significant difference exists
 
----
 ## Key Findings
 
 **Popularity vs. Rating (Pearson Correlation, r = 0.087)**
-There is a statistically significant but practically negligible relationship between a movie's popularity score and its audience rating (r = 0.087, p < 0.001). This suggests that popularity and quality are largely independent — a movie can be widely watched without being highly rated, and vice versa.
+Statistically significant but practically negligible relationship (r = 0.087, p < 0.001). Popularity and quality are largely independent, a movie can be widely watched without being highly rated, and vice versa.
 
 **Action vs. Drama Ratings (Welch T-Test, p < 0.001)**
-Drama movies rate statistically higher than Action movies on TMDB (6.27 vs. 5.96 average rating, p < 0.001). While the difference of 0.31 points may seem small, the result is highly significant across 35,000+ films, suggesting that audiences consistently reward narrative-driven films over action-oriented ones.
-
-
----
+Drama movies rate statistically higher than Action movies (6.27 vs. 5.96 average rating, p < 0.001). The 0.31-point difference is small but highly significant across 35,000+ films, suggesting audiences consistently reward narrative-driven films over action-oriented ones.
 
 ## Data & Filtering Decisions
 
-**Source:** [TMDB Movies Dataset on Kaggle](https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies) — 1.38M rows, 24 columns
+**Source:** [TMDB Movies Dataset on Kaggle](https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies), 1.38M rows, 24 columns
 
 **Filters applied:**
-- `status = 'Released'` — excludes movies still in production, planned, or cancelled
-- `release_year >= 1980 AND release_year <= 2023` — focuses on four decades of modern cinema
-- `vote_count >= 10` — removes entries with insufficient community ratings, reducing noise from obscure or low-quality entries. TMDB is a community-contributed database, so a minimum vote threshold ensures only movies with measurable audience engagement are included.
+- `status = 'Released'`, excludes movies still in production, planned, or cancelled
+- `release_year >= 1980 AND release_year <= 2023`, focuses on four decades of modern cinema
+- `vote_count >= 10`, removes entries with insufficient community ratings, reducing noise from obscure or low-quality entries
 
-**Note on date filtering:** SQLite stores R date objects as integers (days since 1970-01-01) rather than human-readable strings. Date range filtering was therefore handled in R using `lubridate` after querying from SQLite, rather than directly in SQL.
+**Note on date filtering:** SQLite stores R date objects as integers (days since 1970-01-01) rather than human-readable strings. Date range filtering was handled in R using `lubridate` after querying from SQLite, rather than directly in SQL.
 
-**Note on financial data:** Budget and revenue fields were excluded from this analysis. Only ~17,000 of 1.38M entries had both budget and revenue recorded — insufficient for meaningful analysis.
-
----
+**Note on financial data:** Budget and revenue fields were excluded from this analysis. Only ~17,000 of 1.38M entries had both budget and revenue recorded, insufficient for meaningful analysis.
 
 ## Tech Stack
 - **Language:** R
 - **Packages:** tidyverse, ggplot2, lubridate, scales, ggrepel, DBI, RSQLite, readr
 - **Database:** SQLite (via DBI + RSQLite)
 - **Analysis:** Pearson Correlation, Welch Two-Sample T-Test
+
+## Reflection
+A big dataset doesn't mean every column is usable. Deciding what to exclude, and being able to explain why, mattered as much as the statistical findings themselves.
