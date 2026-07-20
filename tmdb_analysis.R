@@ -10,7 +10,7 @@ library(DBI)
 
 # load data (!large data set, give it a minute or two)
 library(readr)
-movies_raw <- read_csv("Documents/Programming/R/tmdb-movie-analysis/data/TMDB_1M_movie_dataset.csv")
+movies_raw <- read_csv("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/data/TMDB_1M_movie_dataset.csv")
 View(movies_raw)
 
 dim(movies_raw)
@@ -21,7 +21,7 @@ data.class(movies_raw)
 #----------------------------------------------------------------------------------
 
 # Create database file and open connection to load into SQLITE
-con <- dbConnect(SQLite(), "Documents/Programming/R/tmdb-movie-analysis/data/tmdb.db")
+con <- dbConnect(SQLite(), "Documents/Data Science/R/Projects/TMDB-Movie-Analysis/data/tmdb.db")
 
 # Write dataframe to SQLite as a table (one-time, takes a few minutes)
 dbWriteTable(con, "movies", movies_raw, overwrite = TRUE)
@@ -110,7 +110,7 @@ movies |>
   theme_minimal(base_size = 12) +
   theme(plot.title = element_text(face = "bold"))
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/01_releases_per_year.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/01_releases_per_year.png",
        width = 10, height = 6, dpi = 150)
 
 # Plot 2: Top 10 genres by movie count
@@ -134,7 +134,7 @@ genres_df |>
     panel.grid.major.y = element_blank()
   )
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/02_top_genres.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/02_top_genres.png",
        width = 9, height = 6, dpi = 150)
 
 # Plot 3: Average rating by genres
@@ -160,7 +160,7 @@ genres_df |>
     panel.grid.major.y = element_blank()
   )
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/03_rating_by_genre.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/03_rating_by_genre.png",
        width = 10, height = 6, dpi = 150)
 
 # Plot 4: Genre popularity over decades
@@ -189,7 +189,7 @@ genres_df |>
   theme_minimal(base_size = 12) +
   theme(plot.title = element_text(face = "bold"))
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/04_genre_trends_decade.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/04_genre_trends_decade.png",
        width = 10, height = 6, dpi = 150)
 
 # Plot 5: Average rating by decade
@@ -211,7 +211,7 @@ movies |>
   theme_minimal(base_size = 12) +
   theme(plot.title = element_text(face = "bold"))
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/05_rating_by_decade.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/05_rating_by_decade.png",
        width = 9, height = 6, dpi = 150)
 
 # Plot 6: Top 10 most popular movies (by popularity score) 
@@ -239,10 +239,8 @@ movies |>
     panel.grid.major.y = element_blank()
   )
 
-ggsave("Documents/Programming/R/tmdb-movie-analysis/plots/06_most_popular.png",
+ggsave("Documents/Data Science/R/Projects/TMDB-Movie-Analysis/plots/06_most_popular.png",
        width = 10, height = 6, dpi = 150)
-
-
 
 #-----------------------------------------------------------------------------------
 
@@ -289,6 +287,10 @@ genres_df |>
     n = n()
   )
 #------------------------------------------------------------------------------------------
+# CSV Export
+write_csv(movies, "Documents/Data Science/R/Projects/TMDB-Movie-Analysis/data/movies_filtered.csv")
+write_csv(genres_df, "Documents/Data Science/R/Projects/TMDB-Movie-Analysis/data/genres_exploded.csv")
+
 
 # Close DB connection
 dbDisconnect(con)
