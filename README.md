@@ -11,6 +11,7 @@
 **Metric:** Popularity and rating are nearly uncorrelated (Pearson r = 0.087, p < 0.001), popularity does not predict quality. Drama movies rate significantly higher than Action (6.27 vs. 5.96, p < 0.001) across 35,000+ films, a small but statistically robust gap.
 
 *[Tableau visualizations to be added here after expansion]*
+![Demo](plots/film-eda-full.gif)
 
 ## Key Questions
 - Which genres are most represented in the film industry?
