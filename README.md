@@ -1,4 +1,4 @@
-# Film Industry EDA
+# TMDB Analytics Dashboard
 
 *Streaming and studio decision-makers often conflate popularity with quality when greenlighting content; this analysis tests whether that assumption holds across 60,000+ films, with direct implications for content investment strategy.*
 
