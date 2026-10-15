@@ -49,10 +49,10 @@ CSV → SQLite Database → SQL Query → Python (pandas) → seaborn Visualizat
 
 ## Statistical Analysis
 
-**Pearson Correlation — Popularity vs. Rating**
+**Pearson Correlation: Popularity vs. Rating**
 Tests whether a movie's popularity score is related to its audience rating.
 
-**Welch Two-Sample T-Test — Action vs. Drama Ratings**
+**Welch Two-Sample T-Test: Action vs. Drama Ratings**
 Tests whether Action and Drama movies receive statistically different audience ratings.
 - H₀: No significant difference in ratings between Action and Drama movies
 - H₁: A significant difference exists
@@ -81,7 +81,7 @@ Documentary (6.87) and Music (6.84) are the two highest-rated genres among those
 **Note on financial data:** Budget and revenue fields were excluded from this analysis. Only ~XX,XXX of 1.5M entries had both budget and revenue recorded, insufficient for meaningful analysis.
 
 ## Tech Stack
-- **Language:** Python (originally built in R, later ported to Python)
+- **Language:** Python
 - **Libraries:** pandas, NumPy, seaborn, matplotlib, SciPy, sqlite3
 - **Database:** SQLite
 - **Analysis:** Pearson Correlation, Welch Two-Sample T-Test
